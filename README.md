@@ -82,14 +82,34 @@ Welcome to the Interactive Restaurant App! This web application allows users to 
         }
 
         // Checkout
-        function checkout() {
-            // Implement checkout logic (e.g., payment, order confirmation)
-            const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-            alert(`Order placed successfully!\nTotal Amount: $${totalAmount.toFixed(2)}`);
-            // Clear the cart after checkout
+        async function checkout() {
+        if (cart.length === 0) {
+            alert('Your cart is empty. Please add items before checking out.');
+            return;
+        }
+
+        // Calculate total amount
+        const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+
+        // Display order summary
+        const confirmation = confirm(`Order Summary:\n\n${getOrderSummary()}\nTotal Amount: $${totalAmount.toFixed(2)}\n\nProceed with the checkout?`);
+
+        if (confirmation) {
+            // Simulate payment (you would integrate a payment gateway in a real scenario)
+            alert('Payment successful! Your order has been confirmed.');
+
+            // Clear the cart after successful checkout
             cart = [];
             updateCart();
+        } else {
+            alert('Checkout canceled.');
         }
+    }
+
+    // Helper function to get order summary
+    function getOrderSummary() {
+        return cart.map(item => `${item.name} x${item.quantity} - $${item.price * item.quantity}`).join('\n');
+    }
     </script>
 </body>
 </html>
