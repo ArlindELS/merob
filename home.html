@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant App</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Restaurant Menu</h1>
+        <div id="menu">
+            <!-- Display menu items here -->
+        </div>
+        <div id="cart">
+            <!-- Display user's cart and order summary here -->
+        </div>
+        <button onclick="checkout()">Checkout</button>
+    </div>
+
+    <script>
+        // Mock data for menu items
+        const menuItems = [
+            { id: 1, name: 'Dish 1', price: 10.99 },
+            { id: 2, name: 'Dish 2', price: 8.99 },
+            // Add more menu items
+        ];
+
+        // User's cart
+        let cart = [];
+
+        // Display menu items
+        const menuElement = document.getElementById('menu');
+        menuItems.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.innerHTML = `${item.name} - $${item.price} <button onclick="addToCart(${item.id})">Add to Cart</button>`;
+            menuElement.appendChild(itemElement);
+        });
+
+        // Add item to the cart
+        function addToCart(itemId) {
+            const selectedItem = menuItems.find(item => item.id === itemId);
+            cart.push(selectedItem);
+            updateCart();
+        }
+
+        // Update cart display
+        function updateCart() {
+            const cartElement = document.getElementById('cart');
+            cartElement.innerHTML = '<h2>Cart</h2>';
+            cart.forEach(item => {
+                const cartItemElement = document.createElement('div');
+                cartItemElement.innerHTML = `${item.name} - $${item.price}`;
+                cartElement.appendChild(cartItemElement);
+            });
+        }
+
+        // Checkout
+        function checkout() {
+            // Implement checkout logic (e.g., payment, order confirmation)
+            alert('Order placed successfully!');
+            // Clear the cart after checkout
+            cart = [];
+            updateCart();
+        }
+    </script>
+
+    <!-- Python Flask Backend -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        // Backend API URLs
+        const apiUrl = 'http://localhost:5000/api';
+
+        // Fetch menu on page load
+        async function fetchMenu() {
+            const response = await fetch(`${apiUrl}/menu`);
+            const menuItems = await response.json();
+
+            const menuElement = document.getElementById('menu');
+            menuItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.innerHTML = `${item.name} - $${item.price} <button onclick="addToCart(${item.id})">Add to Cart</button>`;
+                menuElement.appendChild(itemElement);
+            });
+        }
+
+        // Fetch menu on page load
+        fetchMenu();
+    </script>
+
+    <script>
+        // Python Flask Backend
+        $(document).ready(function() {
+            // Mock data for menu items
+            const menu_items = [
+                {"id": 1, "name": "Dish 1", "price": 10.99},
+                {"id": 2, "name": "Dish 2", "price": 8.99},
+                // Add more menu items
+            ];
+
+            // Store orders
+            const orders = [];
+
+            // Flask app endpoint for menu
+            app.route("/api/menu", methods=["GET"])
+            def get_menu():
+                return jsonify(menu_items)
+
+            // Flask app endpoint for placing an order
+            app.route("/api/order", methods=["POST"])
+            def place_order():
+                order_data = request.json
+                orders.append(order_data)
+                return jsonify({"message": "Order placed successfully!"})
+        });
+    </script>
+</body>
+</html>
