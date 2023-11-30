@@ -1,60 +1,74 @@
-# Interactive Restaurant App
-
-Welcome to the Interactive Restaurant App! This web application allows users to view a restaurant menu, add items to their cart, and proceed with the checkout. The project includes both frontend (HTML, CSS, JavaScript) and backend (Python with Flask) components.
-
-## Features
-
-- **Menu Display:** Browse through a list of menu items with details like name and price.
-- **Ordering System:** Add items to the cart and proceed with the checkout.
-- **Cart Management:** View and manage items in the cart.
-- **Interactive Elements:** Users can customize the quantity of items in their order.
-
-## Usage
-
-### Frontend (HTML, CSS, JavaScript)
-
-#### HTML (`index.html`)
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Restaurant App</title>
+    <title>McDonald's Style Menu</title>
     <style>
         /* Add your CSS styles here */
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        #menu {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .menu-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 15px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .menu-item img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="app">
-        <h1>Interactive Restaurant Menu</h1>
-        <div id="menu">
-            <!-- Display menu items here -->
-        </div>
-        <div id="cart">
-            <!-- Display user's cart and order summary here -->
-        </div>
+        <h1>McDonald's Style Menu</h1>
+        <div id="menu"></div>
+        <div id="cart"></div>
         <button onclick="checkout()">Checkout</button>
     </div>
 
     <script>
-        // Mock data for menu items
+        // Mock data for McDonald's style menu items
         const menuItems = [
-            { id: 1, name: 'Dish 1', price: 10.99 },
-            { id: 2, name: 'Dish 2', price: 8.99 },
+            { id: 1, name: 'Big Mac', price: 5.99, image: 'big_mac.jpg' },
+            { id: 2, name: 'McChicken', price: 4.49, image: 'mcchicken.jpg' },
+            { id: 3, name: 'French Fries', price: 2.29, image: 'fries.jpg' },
             // Add more menu items
         ];
 
         // User's cart
         let cart = [];
 
-        // Display menu items
+        // Display McDonald's style menu items
         const menuElement = document.getElementById('menu');
         menuItems.forEach(item => {
             const itemElement = document.createElement('div');
+            itemElement.classList.add('menu-item');
             itemElement.innerHTML = `
-                <p>${item.name} - $${item.price}</p>
+                <img src="${item.image}" alt="${item.name}">
+                <p>${item.name}</p>
+                <p>$${item.price.toFixed(2)}</p>
                 <label for="quantity-${item.id}">Quantity:</label>
                 <input type="number" id="quantity-${item.id}" value="1" min="1">
                 <button onclick="addToCart(${item.id})">Add to Cart</button>`;
@@ -76,40 +90,40 @@ Welcome to the Interactive Restaurant App! This web application allows users to 
             cartElement.innerHTML = '<h2>Cart</h2>';
             cart.forEach(item => {
                 const cartItemElement = document.createElement('div');
-                cartItemElement.innerHTML = `${item.name} x${item.quantity} - $${item.price * item.quantity}`;
+                cartItemElement.innerHTML = `${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`;
                 cartElement.appendChild(cartItemElement);
             });
         }
 
         // Checkout
-        async function checkout() {
-        if (cart.length === 0) {
-            alert('Your cart is empty. Please add items before checking out.');
-            return;
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty. Please add items before checking out.');
+                return;
+            }
+
+            // Calculate total amount
+            const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+
+            // Display order summary
+            const confirmation = confirm(`Order Summary:\n\n${getOrderSummary()}\nTotal Amount: $${totalAmount.toFixed(2)}\n\nProceed with the checkout?`);
+
+            if (confirmation) {
+                // Simulate payment (you would integrate a payment gateway in a real scenario)
+                alert('Payment successful! Your order has been confirmed.');
+
+                // Clear the cart after successful checkout
+                cart = [];
+                updateCart();
+            } else {
+                alert('Checkout canceled.');
+            }
         }
 
-        // Calculate total amount
-        const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-
-        // Display order summary
-        const confirmation = confirm(`Order Summary:\n\n${getOrderSummary()}\nTotal Amount: $${totalAmount.toFixed(2)}\n\nProceed with the checkout?`);
-
-        if (confirmation) {
-            // Simulate payment (you would integrate a payment gateway in a real scenario)
-            alert('Payment successful! Your order has been confirmed.');
-
-            // Clear the cart after successful checkout
-            cart = [];
-            updateCart();
-        } else {
-            alert('Checkout canceled.');
+        // Helper function to get order summary
+        function getOrderSummary() {
+            return cart.map(item => `${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`).join('\n');
         }
-    }
-
-    // Helper function to get order summary
-    function getOrderSummary() {
-        return cart.map(item => `${item.name} x${item.quantity} - $${item.price * item.quantity}`).join('\n');
-    }
     </script>
 </body>
 </html>
